@@ -1,0 +1,7 @@
+users:
+  - username: sarah
+    roles: [readonly, developer]
+  - username: amenah
+    roles: [admin, auditor]
+  - username: mohammad
+    roles: [readonly]
