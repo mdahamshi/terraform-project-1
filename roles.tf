@@ -15,10 +15,13 @@ locals {
       "SecurityAudit"
     ]
   }
-
+  role_polices_list = flatten([
+    for role, polices in local.role_polices : [
+      for policy in polices : {
+        role   = role
+        policy = policy
+      }
+    ]
+  ])
 }
 
-
-output "role_polices" {
-  value = local.role_polices
-}
