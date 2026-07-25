@@ -34,12 +34,28 @@ locals {
   ])
 }
 
+/*
+ We must iterate over the existing roles and create differente assume role policy for each of them
+
+ In each role policy under identifiers add only the users that have that spesific role listed to them
+*/
+output "toset" {
+  value = (keys(local.role_polices))
+}
+data "aws_caller_identity" "current" {
+
+}
 data "aws_iam_policy_document" "assume_role_policy" {
+  for_each = toset(keys(local.role_polices))
+
   statement {
     actions = ["sts:AssumeRole"]
     principals {
-      type        = "AWS"
-      identifiers = ["arn:aws:iam::953907014716:user/mohammad"]
+      type = "AWS"
+      identifiers = [
+        for username in keys(aws_iam_user.users) : "arn:aws:iam::${data.aws_caller_identity.current.account_id}:user/${username}"
+        if contains(local.users_map[username], each.value)
+      ]
     }
   }
 }
@@ -47,7 +63,7 @@ data "aws_iam_policy_document" "assume_role_policy" {
 resource "aws_iam_role" "roles" {
   for_each           = toset(keys(local.role_polices))
   name               = each.key
-  assume_role_policy = data.aws_iam_policy_document.assume_role_policy.json
+  assume_role_policy = data.aws_iam_policy_document.assume_role_policy[each.value].json
 }
 
 data "aws_iam_policy" "managed_polices" {
