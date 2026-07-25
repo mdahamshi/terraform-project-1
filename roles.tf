@@ -34,3 +34,18 @@ locals {
   ])
 }
 
+data "aws_iam_policy_document" "assume_role_policy" {
+  statement {
+    actions = ["sts:AssumeRole"]
+    principals {
+      type        = "AWS"
+      identifiers = ["arn:aws:iam::953907014716:user/mohammad"]
+    }
+  }
+}
+
+resource "aws_iam_role" "roles" {
+  for_each           = toset(keys(local.role_polices))
+  name               = each.key
+  assume_role_policy = data.aws_iam_policy_document.assume_role_policy.json
+}
