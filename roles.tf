@@ -49,3 +49,14 @@ resource "aws_iam_role" "roles" {
   name               = each.key
   assume_role_policy = data.aws_iam_policy_document.assume_role_policy.json
 }
+
+data "aws_iam_policy" "managed_polices" {
+  for_each = toset(local.role_polices_list[*].policy)
+  arn      = "arn:aws:iam::aws:policy/${each.value}"
+}
+
+resource "aws_iam_role_policy_attachment" "attachments" {
+  count      = length(local.role_polices_list)
+  role       = aws_iam_role.roles[local.role_polices_list[count.index].role].name
+  policy_arn = data.aws_iam_policy.managed_polices[local.role_polices_list[count.index].policy].arn
+}
