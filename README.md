@@ -1,5 +1,5 @@
+![proejct image](./image.png)
 # Terraform Project 1 — AWS IAM Users & Roles
-
 Manages AWS IAM users, login profiles, and role-based access control using Terraform. User definitions are stored in a YAML file, and Terraform dynamically creates IAM users, assigns roles, and configures assume-role policies based on those definitions.
 
 > **Note:** Passwords are output to the console for learning purposes only. This is not production-safe practice.
@@ -43,7 +43,7 @@ This project was built as part of the Udemy course [**Terraform: The Complete Gu
 ## Installation
 
 ```bash
-git clone https://github.com/<your-username>/terraform-project-1.git
+git clone https://github.com/mdahamshi/terraform-project-1.git
 cd terraform-project-1
 terraform init
 ```
